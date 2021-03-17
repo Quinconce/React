@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+			crossorigin="anonymous"
+		/>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class BaseNumberInput extends React.Component {
+				render() {
+					return (
+						<div>
+							<h3>Base {this.props.base}</h3>
+							<input
+								value={
+									this.props.number !== 0
+										? this.props.number.toString(this.props.base)
+										: ""
+								}
+								onChange={this.props.onNumberChange}
+							/>
+						</div>
+					);
+				}
+			}
+
+			class BaseForm extends React.Component {
+				render() {
+					return (
+						<div>
+							<h3>Choix de base</h3>
+							<select
+								value={this.props.base}
+								onChange={this.props.onSelectBase}>
+								<option value=''></option>
+								<option value={2}>2</option>
+								<option value={3}>3</option>
+								<option value={7}>7</option>
+							</select>
+						</div>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				constructor() {
+					super();
+					this.state = {
+						number: 0,
+						base: "",
+					};
+				}
+				handleNumberChange = (event, base) => {
+					const val =
+						event.target.value !== ""
+							? Number.parseInt(event.target.value, base)
+							: 0;
+					if (!isNaN(val)) {
+						this.setState({
+							number: val,
+						});
+					}
+				};
+
+				render() {
+					return (
+						<div className='container'>
+							<h1>Change base</h1>
+							<div className='row'>
+								<div className='col-12 col-md-6'>
+									<BaseNumberInput
+										number={this.state.number}
+										base={10}
+										onNumberChange={(event) =>
+											this.handleNumberChange(event, 10)
+										}
+									/>
+								</div>
+								<div className='col-12 col-md-6'>
+									{this.state.base !== "" ? (
+										<React.Fragment>
+											<BaseNumberInput
+												number={this.state.number}
+												base={this.state.base}
+												onNumberChange={(event) =>
+													this.handleNumberChange(event, this.state.base)
+												}
+											/>
+											<button
+												className='mt-5'
+												onClick={() => this.setState({ base: "" })}>
+												Réinitialisation
+											</button>
+										</React.Fragment>
+									) : (
+										<BaseForm
+											base={this.state.base}
+											onSelectBase={(e) =>
+												this.setState({ base: e.target.value })
+											}
+										/>
+									)}
+								</div>
+							</div>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>
