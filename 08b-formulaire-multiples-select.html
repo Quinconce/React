@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Form extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = { value: "", multiples: [] };
+
+					this.handleChange = this.handleChange.bind(this);
+				}
+
+				computeMultiples(nb, max = 100) {
+					let multiples = [];
+					let facteur = 1;
+					while (nb * facteur < max) {
+						multiples.push(nb * facteur);
+						facteur++;
+					}
+					return multiples;
+				}
+
+				handleChange(event) {
+					let multiples = [];
+					if (event.target.value !== "0") {
+						multiples = this.computeMultiples(Number(event.target.value));
+					}
+
+					this.setState({
+						multiples: multiples,
+						value: event.target.value,
+					});
+				}
+
+				render() {
+					return (
+						<form onSubmit={this.handleSubmit}>
+							<div>
+								<label>
+									Saisir un nombre entier:
+									<select value={this.state.value} onChange={this.handleChange}>
+										<option value='0'></option>
+										{Array(11)
+											.fill()
+											.map((_, i) => (
+												<option key={i + 1} value={i + 1}>
+													{i + 1}
+												</option>
+											))}
+									</select>
+								</label>
+							</div>
+							{this.state.multiples.length > 0 && (
+								<React.Fragment>
+									<h4>Multiples de {this.state.value}</h4>
+									<ul>
+										{this.state.multiples.map((v, i) => (
+											<li key={i}>{v}</li>
+										))}
+									</ul>
+								</React.Fragment>
+							)}
+						</form>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				render() {
+					return <Form />;
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

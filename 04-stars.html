@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				render() {
+					return (
+						<div
+							style={{
+								display: "flex",
+								flexFlow: "row nowrap",
+								justifyContent: "space-between",
+							}}>
+							<div style={{ width: "50%" }}>
+								<StarGrid nbLines={7} nbStars={10} delay={300} symbol='*' />
+							</div>
+							<div style={{ width: "50%" }}>
+								<StarGrid nbLines={5} nbStars={12} delay={500} symbol='#' />
+							</div>
+						</div>
+					);
+				}
+			}
+
+			class StarGrid extends React.Component {
+				constructor() {
+					super();
+					this.state = { count: 1 };
+					this.timerID = null;
+				}
+				componentDidMount() {
+					this.timerID = setInterval(() => {
+						this.setState({ count: this.state.count + 1 });
+					}, this.props.delay * this.props.nbStars);
+				}
+				componentDidUpdate() {
+					if (this.state.count === this.props.nbLines) {
+						clearInterval(this.timerID);
+					}
+				}
+				render() {
+					return (
+						<div>
+							{Array(this.state.count)
+								.fill()
+								.map((_, i) => (
+									<Line
+										key={i}
+										nbStars={this.props.nbStars}
+										delay={this.props.delay}
+										symbol={this.props.symbol}
+									/>
+								))}
+						</div>
+					);
+				}
+			}
+
+			class Line extends React.Component {
+				constructor() {
+					super();
+					this.state = { count: 0 };
+					this.timerID = null;
+				}
+				componentDidMount() {
+					this.timerID = setInterval(() => {
+						this.setState({ count: this.state.count + 1 });
+					}, this.props.delay);
+				}
+				componentDidUpdate() {
+					if (this.state.count === this.props.nbStars) {
+						clearInterval(this.timerID);
+					}
+				}
+				render() {
+					return <p>{Array(this.state.count).fill(`${this.props.symbol} `)}</p>;
+				}
+			}
+
+			// Rendu dans le DOM
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

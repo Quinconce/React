@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Form extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = { value: "", number: null, multiples: [], errorMsg: "" };
+
+					this.handleChange = this.handleChange.bind(this);
+					this.handleSubmit = this.handleSubmit.bind(this);
+				}
+
+				computeMultiples(nb, max = 100) {
+					let multiples = [];
+					let facteur = 1;
+					while (nb * facteur < max) {
+						multiples.push(nb * facteur);
+						facteur++;
+					}
+					return multiples;
+				}
+
+				handleChange(event) {
+					// version qui limite la saisie à des nombres
+					// if (!isNaN(Number(event.target.value))) {
+					// 	this.setState({
+					// 		value:
+					// 			"" +
+					// 			(Number(event.target.value) !== 0
+					// 				? Number(event.target.value)
+					// 				: ""),
+					// 	});
+					// }
+					this.setState({
+						value: event.target.value,
+					});
+				}
+
+				handleSubmit(event) {
+					event.preventDefault();
+					let errorMsg = "";
+					let multiples = [];
+					let number = null;
+					if (isNaN(Number(this.state.value))) {
+						errorMsg = "La valeur saisie doit être un nombre";
+					} else if (Number(this.state.value) < 0) {
+						errorMsg = "La valeur saisie doit être un nombre positif";
+					} else if (Number(this.state.value) > 100) {
+						errorMsg = "La valeur saisie doit être un nombre inférieur à 100";
+					} else {
+						multiples = this.computeMultiples(Number(this.state.value));
+						number = Number(this.state.value);
+					}
+
+					this.setState({
+						multiples: multiples,
+						errorMsg: errorMsg,
+						number: number,
+					});
+				}
+
+				render() {
+					return (
+						<form onSubmit={this.handleSubmit}>
+							{this.state.errorMsg !== "" && (
+								<p style={{ color: "red" }}>ERREUR: {this.state.errorMsg}</p>
+							)}
+							<div>
+								<label>
+									Saisir un nombre entier:
+									<input
+										type='text'
+										value={this.state.value}
+										onChange={this.handleChange}
+									/>
+								</label>
+							</div>
+							<input type='submit' value='Calculer les multiples' />
+							{this.state.multiples.length > 0 && (
+								<React.Fragment>
+									<h4>Multiples de {this.state.number}</h4>
+									<ul>
+										{this.state.multiples.map((v, i) => (
+											<li key={i}>{v}</li>
+										))}
+									</ul>
+								</React.Fragment>
+							)}
+						</form>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				render() {
+					return <Form />;
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

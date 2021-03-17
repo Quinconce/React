@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+			crossorigin="anonymous"
+		/>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class BaseNumberInput extends React.Component {
+				render() {
+					const number = Number(this.props.number);
+					return (
+						<div>
+							<h3>Base {this.props.base}</h3>
+							<input
+								value={number !== 0 ? number.toString(this.props.base) : ""}
+								onChange={this.props.onNumberChange}
+							/>
+						</div>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				constructor() {
+					super();
+					this.state = {
+						number: "",
+					};
+				}
+				handleNumberChange = (event, base) => {
+					// TODO traduire en base 10 le string réceptionné
+					if (!isNaN(Number(event.target.value))) {
+						this.setState({
+							number: Number(parseInt(event.target.value,base))
+						});
+					}
+				};
+				render() {
+					return (
+						<div className='container'>
+							<h1>Decimal to Binary</h1>
+							<div className='row'>
+								<div className='col-12 col-md-6'>
+									<BaseNumberInput
+										number={this.state.number}
+										base={10}
+										onNumberChange={(event) =>
+											this.handleNumberChange(event, 10)
+										}
+									/>
+								</div>
+								<div className='col-12 col-md-6'>
+									<BaseNumberInput
+										number={this.state.number}
+										base={2}
+										onNumberChange={(event) =>
+											this.handleNumberChange(event, 2)
+										}
+									/>
+								</div>
+							</div>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

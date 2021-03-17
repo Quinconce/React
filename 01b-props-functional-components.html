@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<style>
+			.message {
+				background-color: #ccc;
+				padding: 10px;
+				margin: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			const App = () => {
+				const messages = [
+					{ message: "React JS" },
+					{ message: "React Native" },
+					{ message: "Angular" },
+					{ message: "Symfony" },
+					{ message: "MongoDB" },
+				];
+				return (
+					<div style={{ maxWidth: "800px", margin: "auto" }}>
+						<Messages messages={messages} />
+					</div>
+				);
+			};
+
+			const Messages = (props) => {
+				// Affiche une liste de components Message (éventuellement wrappée dans un élément HTML stylé), a chacun a été assigné message du tableau
+				return (
+					<ul style={{ listStyleType: "none" }}>
+						{props.messages.map((msg, i) => (
+							<Message key={i} message={msg.message} />
+						))}
+					</ul>
+				);
+			};
+			const Message = (props) => {
+				return <li className='message'>{props.message}</li>;
+			};
+
+			// Rendu dans le DOM
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

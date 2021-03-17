@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<style>
+			.message {
+				background-color: #ccc;
+				padding: 10px;
+				margin: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				// Déclare une variable contenant un tableau de messages (strings)
+				constructor() {
+					super();
+					this.messages = [
+						{ message: "React JS" },
+						{ message: "React Native" },
+						{ message: "Angular" },
+						{ message: "Symfony" },
+						{ message: "MongoDB" },
+					];
+				}
+				// Affiche simplement le component Messages, éventuellement wrappé dans un élément HTML éventuellement stylé
+				render() {
+					return (
+						<div style={{ maxWidth: "800px", margin: "auto" }}>
+							<Messages messages={this.messages} />
+						</div>
+					);
+				}
+			}
+			class Messages extends React.Component {
+				// Affiche une liste de components Message (éventuellement wrappée dans un élément HTML stylé), a chacun a été assigné message du tableau
+				render() {
+					return (
+						<ul style={{ listStyleType: "none" }}>
+							{this.props.messages.map((msg, i) => (
+								<Message key={i} message={msg.message} />
+							))}
+						</ul>
+					);
+				}
+			}
+			class Message extends React.Component {
+				render() {
+					return <li className='message'>{this.props.message}</li>;
+				}
+			}
+
+			// Rendu dans le DOM
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

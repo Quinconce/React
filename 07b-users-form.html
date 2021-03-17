@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Users extends React.Component {
+				render() {
+					return (
+						<ul>
+							{this.props.userList.map((userName, index) => (
+								<li key={index}>{userName}</li>
+							))}
+						</ul>
+					);
+				}
+			}
+
+			class Form extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = { firstName: "", lastName: "", users: [], errorMsg: "" };
+
+					this.handleChange = this.handleChange.bind(this);
+					//this.handleChangeLastName = this.handleChangeLastName.bind(this);
+					//this.handleChangeFirstName = this.handleChangeFirstName.bind(this);
+					this.handleSubmit = this.handleSubmit.bind(this);
+				}
+
+				handleChange(event) {
+					const { value, name } = event.target;
+					// le name provient du champ dans lequel on est en train d'écrire
+					// ici il vaut donc "firstName" ou "lastName"
+					// Les crochets permettent de définir une propriété dynamique :
+					// la variable name est d'abord évaluée, puis on utilise le résultat comme nom
+					// de propriété dans l'objet qu'on envoie pour modifier le state.
+					// La fonction peut donc servir à modifier n'importe quel state
+					// (tant qu'on a donné aux champs un attribut name dont la valeur coincide
+					// avec le nom du state qui lui est attaché)
+					this.setState({
+						[name]: event.target.value.trim().toUpperCase(),
+						errorMsg: "",
+					});
+				}
+				/*
+				handleChangeFirstName(event) {
+					console.log(event.target);
+					this.setState({
+						firstName: event.target.value.trim().toUpperCase(),
+						errorMsg: "",
+					});
+				}
+
+				handleChangeLastName(event) {
+					console.log(event.target);
+					this.setState({
+						lastName: event.target.value.trim().toUpperCase(),
+						errorMsg: "",
+					});
+				}
+        */
+
+				handleSubmit(event) {
+					event.preventDefault();
+					// si le prénom saisi a déjà été enregistré
+					if (this.state.firstName === "" || this.state.lastName === "") return;
+					if (
+						this.state.users.includes(
+							`${this.state.firstName} ${this.state.lastName}`
+						)
+					) {
+						this.setState({
+							errorMsg: `Le nom ${`${this.state.firstName} ${this.state.lastName}`} est déjà enregistré`,
+							value: "",
+						});
+						return;
+					}
+					/*
+          Attention à ne pas utiliser push car cela revient à modifier directement le state
+          On doit créer un nouveau tableau pour le stocker dans le state users
+          soit par destructuring, soit avec la méthode concat des tableaux
+          */
+					this.setState({
+						users: [
+							...this.state.users,
+							`${this.state.firstName} ${this.state.lastName}`,
+						],
+						value: "",
+					});
+					// ou...
+					// this.setState({ users: this.state.users.concat(this.state.value) });
+				}
+
+				render() {
+					return (
+						<form onSubmit={this.handleSubmit}>
+							{this.state.errorMsg !== "" && (
+								<p style={{ color: "red" }}>ERREUR: {this.state.errorMsg}</p>
+							)}
+							<div>
+								<label>
+									Nom:
+									<input
+										type='text'
+										value={this.state.lastName}
+										name='lastName'
+										onChange={this.handleChange}
+									/>
+								</label>
+							</div>
+							<div>
+								<label>
+									Prénom:
+									<input
+										type='text'
+										value={this.state.firstName}
+										name='firstName'
+										onChange={this.handleChange}
+									/>
+								</label>
+							</div>
+							<input type='submit' value='Add' />
+							<Users userList={this.state.users} />
+						</form>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				render() {
+					return <Form />;
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

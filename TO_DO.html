@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://kit.fontawesome.com/4ead355834.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: rgb(49, 49, 49);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #root {
+            border-radius: 5px;
+            background-color: #fff6e2;
+            width: 70%;
+            padding-right: 5rem;
+            padding-left: 5rem;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 3.5rem;
+            color: #000000
+        }
+
+        li {
+            font-size: 1.5rem;
+            background-color: rgb(89, 86, 223);
+            padding: 1rem;
+            transition: all 450ms ease;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        li:hover {
+            transform: scale(1.05);
+            border: crimson 2px solid;
+        }
+
+        .input form {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            border: rgb(89, 86, 223) 2px solid;
+            width: 100%;
+            height: 30px;
+            transition: all 200ms ease;
+            background-color: #fff6e2;
+        }
+
+        input:hover {
+            background-color: rgb(138, 136, 242);
+            color: #fff6e2
+        }
+
+        button {
+            border-radius: 5px;
+            border: rgb(89, 86, 223) 2px solid;
+            width: 100%;
+            height: 30px;
+            transition: all 200ms ease;
+            background-color: #fff6e2;
+            font-size: 1.5rem;
+            width: 20%;
+            height: 100%;
+            margin-left: 1rem;
+        }
+
+        button:hover {
+            background-color: rgb(138, 136, 242);
+            color: #fff6e2
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // énoncé:
+        // -Faire une todo-list capable d'ajouter une tache grace à un input suivi d'un boutton
+        // -Supprimer une tache en appuyant dessus
+        // -Ect
+        // prérequis:
+        // -les élements input et button seronts dans une div de la class "input"
+        // -les taches seronts affichés dans des balises <p>
+
+        class Form extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { value: "", errorMsg: "", list: []};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+
+            handleDelete = id => {
+                const list = this.state.list;
+                const index = list.findIndex(list => list.id === id)
+                list.splice(id, 1);
+                this.setState({list: list})
+            }
+
+            handleChange(event){
+                this.setState(
+                    { 
+                        value: event.target.value,
+                        errorMsg: "" 
+                    }
+                );
+            }
+
+            handleSubmit(event){
+                event.preventDefault();
+                if(this.state.list.includes(this.state.value)) {
+                    this.setState({ errorMsg:`${ this.state.value } est déjà présent dans la liste.` })
+                    return;
+                }
+                else if (this.state.value.trim() === ""){
+                    this.setState({ value:"" })
+                    return;
+                }
+                this.setState(
+                    { 
+                        list:[...this.state.list, this.state.value],
+                        value: "" 
+                    }
+                );
+            }
+
+            render() {
+                return (
+                    <div className="input">
+                        <p>{ this.state.errorMsg }</p>
+                        <form onSubmit={ this.handleSubmit }>
+                            <input type="text" value={ this.state.value } onChange={ this.handleChange } />
+                            <button type="submit">Add</button>
+                        </form>
+                        <ul>
+                            { this.state.list.map((li, index) => (
+                                <li key={ index }>{ li }<button type="submit" onClick={() => this.handleDelete(this.state.list.index)}><i className="fas fa-check"></i></button></li>
+                            )) }
+                        </ul>
+                    </div>
+                );
+            }
+        }
+
+//<List toDo={ this.state.list }/> //normalement en ligne 167 quand on a 2 components
+
+        // class List extends React.Component {
+        //     // constructor(){
+        //     //     super();
+        //     //     this.state = { toDoList: [] };
+        //     // }
+        //     // delete(){
+        //     //     this.setState({toDoList: this.state.toDoList.splice})
+        //     // }
+        //     // handleDelete = id => {
+        //     //     const list = this.state.list;
+        //     //     const index = list.findIndex(list => list.id === id)
+        //     //     list.splice(id, 1);
+        //     //     this.setState({list: list})
+        //     // }
+        //     render() {
+        //         return(
+        //             <div>
+        //                 <ul>
+        //                     { this.props.toDo.map((li, index) => (
+        //                         <li key={ index }>{ li }<button type="submit" onClick={() => this.handleDelete(list.index)}><i className="fas fa-check"></i></button></li>
+        //                     )) }
+        //                 </ul>
+        //             </div>
+        //         )
+        //     }
+        // }
+
+        class App extends React.Component {
+            render(){
+                return (
+                    <div>
+                        <h1>TODO LIST</h1>
+                        <Form />
+                    </div>
+                );
+
+            }
+        }
+
+        ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+</body>
+
+</html>

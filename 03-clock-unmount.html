@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<style>
+			.message {
+				background-color: #ccc;
+				padding: 10px;
+				margin: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Box extends React.Component {
+				constructor() {
+					super();
+					console.log("INSTANCIATION BOX");
+				}
+				componentDidMount() {
+					console.log("MOUNT BOX");
+				}
+				componentWillUnmount() {
+					console.log("UNMOUNT BOX");
+				}
+				render() {
+					return (
+						<div
+							style={{ height: 100, width: 100, backgroundColor: "red" }}></div>
+					);
+				}
+			}
+
+			class Clock extends React.Component {
+				constructor(props) {
+					super(props);
+					// initialisation du state
+					this.state = {
+						date: new Date(),
+					};
+					this.timerID = null;
+				}
+				// Une fois le component monté dans le DOM, on veut mettre à jour chaque seconde le state date
+				// ce qui provoquera à chaque seconde un nouvel appel à render
+				componentDidMount() {
+					this.timerID = setInterval(() => {
+						this.setState({ date: new Date() });
+					}, 1000);
+				}
+				// Avant de démonter l'horloge du DOM, on souhaite interrompre le timer déclenché au montage
+				componentWillUnmount() {
+					console.log("L'horloge va être démontée du DOM");
+					clearInterval(this.timerID);
+				}
+				render() {
+					return (
+						<div>
+							<p>{this.state.date.toLocaleTimeString()}</p>
+						</div>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				constructor() {
+					super();
+					// initialisation du state
+					this.state = { showClock: true };
+				}
+				// lorsque le component est monté dans le DOM, on déclenche un timer qui passera le state showClock à false 5 secondes plus tard
+				componentDidMount() {
+					setTimeout(() => {
+						this.setState({ showClock: false });
+					}, 5000);
+				}
+				render() {
+					return (
+						<div style={{ padding: 20, backgroundColor: "#ccc" }}>
+							{this.state.showClock && <Clock />}
+						</div>
+					);
+				}
+			}
+
+			// Rendu dans le DOM
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

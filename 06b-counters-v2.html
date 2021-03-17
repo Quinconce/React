@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<style>
+			button {
+				background-color: #468189;
+				color: white;
+				font-weight: bold;
+				border: none;
+				border-radius: 5px;
+				padding: 10px 15px;
+				margin-right: 10px;
+				cursor: pointer;
+			}
+			button[disabled] {
+				opacity: 0.5;
+			}
+			.count {
+				font-weight: bold;
+				font-size: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Counter extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						count: 0,
+						timerID: null,
+					};
+				}
+				onStartCounter = () => {
+					const timerID = setInterval(() => {
+						this.setState({ count: this.state.count + this.props.step });
+					}, this.props.delay);
+					this.setState({ timerID: timerID });
+				};
+				onStopCounter = () => {
+					clearInterval(this.state.timerID);
+					this.setState({ timerID: null });
+				};
+				onResetCounter = () => {
+					if (this.state.timerID !== null) {
+						clearInterval(this.state.timerID);
+					}
+					this.setState({ count: 0, timerID: null });
+				};
+				componentDidUpdate() {
+					/*if (
+						this.state.count === this.props.max &&
+						this.state.timerID !== null
+					) {
+						this.onStopCounter();
+          }*/
+					if (this.state.count === this.props.max + 1) {
+						this.setState({ count: 0 });
+					}
+				}
+				render() {
+					return (
+						<div>
+							<div>
+								<button
+									disabled={this.state.timerID !== null}
+									onClick={this.onStartCounter}>
+									Start (+{this.props.step})
+								</button>
+								<button
+									disabled={this.state.timerID === null}
+									onClick={this.onStopCounter}>
+									Stop
+								</button>
+								{this.state.count > 0 && (
+									<button onClick={this.onResetCounter}>Reset</button>
+								)}
+							</div>
+							<p className='count'>Décimal: {this.state.count}</p>
+							<p className='count'>
+								Binaire: {Number(this.state.count).toString(2)}
+							</p>
+						</div>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				render() {
+					return (
+						<div>
+							<Counter step={1} delay={1000} max={5} />
+							<Counter step={2} delay={500} max={7} />
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>

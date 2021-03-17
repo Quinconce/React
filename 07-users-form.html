@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class Users extends React.Component {
+				render() {
+					return (
+						<ul>
+							{this.props.userList.map((userName, index) => (
+								<li key={index}>{userName}</li>
+							))}
+						</ul>
+					);
+				}
+			}
+
+			class Form extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = { value: "", users: [], errorMsg: "" };
+
+					this.handleChange = this.handleChange.bind(this);
+					this.handleSubmit = this.handleSubmit.bind(this);
+				}
+
+				handleChange(event) {
+					console.log(event.target);
+					this.setState({
+						value: event.target.value.trim().toUpperCase(),
+						errorMsg: "",
+					});
+				}
+
+				handleSubmit(event) {
+					event.preventDefault();
+					// si le prénom saisi a déjà été enregistré
+					if (this.state.value === "") return;
+					if (this.state.users.includes(this.state.value)) {
+						this.setState({
+							errorMsg: `Le nom ${this.state.value} est déjà enregistré`,
+							value: "",
+						});
+						return;
+					}
+					/*
+          Attention à ne pas utiliser push car cela revient à modifier directement le state
+          On doit créer un nouveau tableau pour le stocker dans le state users
+          soit par destructuring, soit avec la méthode concat des tableaux
+          */
+					this.setState({
+						users: [...this.state.users, this.state.value],
+						value: "",
+					});
+					// ou...
+					// this.setState({ users: this.state.users.concat(this.state.value) });
+				}
+
+				render() {
+					return (
+						<form onSubmit={this.handleSubmit}>
+							{this.state.errorMsg !== "" && (
+								<p style={{ color: "red" }}>ERREUR: {this.state.errorMsg}</p>
+							)}
+							<label>
+								Username:
+								<input
+									type='text'
+									value={this.state.value}
+									onChange={this.handleChange}
+								/>
+							</label>
+							<input type='submit' value='Add' />
+							<Users userList={this.state.users} />
+						</form>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				render() {
+					return <Form />;
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
+</html>
