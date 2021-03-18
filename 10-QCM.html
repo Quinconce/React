@@ -1,92 +1,84 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<title>Hello React</title>
-		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
-		<!-- babel => compilation du JSX -->
-		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-		<style>
-			.message {
-				background-color: #ccc;
-				padding: 10px;
-				margin: 10px;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="text/babel">
-            class Select extends React.Component {
-				render() {
-					return (
-						<React.Fragment>
-							
-								<Select Name={this.props.name}>
-                                    {this.props.select.map((v, i) => (
-											<option key={i} value={v}> {v}</option>
-										))}
-                                    
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+      .message {
+        background-color: #ccc;
+        padding: 10px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Select extends React.Component {
+        render() {
+          return (
+            <React.Fragment>
+              <select name={this.props.Name} onChange={this.props.onchange}>
+                {this.props.select.map((v, i) => (
+                  <option key={i} value={v}>
+                    {" "}
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </React.Fragment>
+          );
+        }
+      }
+      class Radio extends React.Component {
+        render() {
+          return (
+            <React.Fragment>
+              <label>
+                <input
+                  type="radio"
+                  name={this.props.name}
+                  value={this.props.value}
+                  onClick={this.props.handleSelect}
+                />{" "}
+                {this.props.label}
+              </label>
+            </React.Fragment>
+          );
+        }
+      }
 
-                                </Select>
-							
-						</React.Fragment>
-					);
-				}
-			}
-			class Radio extends React.Component {
-				render() {
-					return (
-						<React.Fragment>
-							<label>
-								<input
-									type='radio'
-									name={this.props.name}
-									value={this.props.value}
-									onClick={this.props.handleSelect}
-								/>{" "}
-								{this.props.label}
-							</label>
-						</React.Fragment>
-					);
-				}
-			}
+      class App extends React.Component {
+        
+        render() {
+          return (
+            <div>
+              <Select Name="tem" select={["les regligons sont des sectes", "lanniserter>stark", "harry potter surcoté"]} onchange={(e) => console.log(e.target.value)}/>
 
-			class App extends React.Component {
-                constructor(){
-                    super()
-                    this.state={tableau:[0,1,2]}
-                }
-				render() {
-					return (
-						<div>   
-                            <Select 
-                                    Name='tem' 
-                                    select={this.state.tableau}
-                            />
+              <Radio
+                name="question1"
+                value={0}
+                label="oui"
+                handleSelect={(e) => console.log(e.target.value)}
+              />
+              <Radio
+                name="question1"
+                value={1}
+                label="non"
+                handleSelect={(e) => console.log(e.target.value)}
+              />
+            </div>
+          );
+        }
+      }
 
-
-							<Radio
-								name='question1'
-								value={0}
-								label='oui'
-								handleSelect={(e) => console.log(e.target.value)}
-							/>
-							<Radio
-								name='question1'
-								value={1}
-								label='non'
-								handleSelect={(e) => console.log(e.target.value)}
-							/>
-						</div>
-					);
-				}
-			}
-
-			// Rendu dans le DOM
-			ReactDOM.render(<App />, document.getElementById("root"));
-		</script>
-	</body>
+      // Rendu dans le DOM
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
 </html>
