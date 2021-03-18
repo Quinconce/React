@@ -1,112 +1,263 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Hello React</title>
-    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello React</title>
+		<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
-    <!-- babel => compilation du JSX -->
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-    <style>
-      .message {
-        background-color: #ccc;
-        padding: 10px;
-        margin: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/babel">
-    class Form extends React.Component {
-        render() {
-          return (
-            <React.Fragment>
-               <form onSubmit={this.props.submit}>
-                
-                </form>
-            </React.Fragment>
-          );
-        }
-      }
-    class Input extends React.Component {
-        render() {
-          return (
-            <React.Fragment>
-                <label >
-                    <p>{this.props.question}</p>
-                    <input type="text" value={this.props.prenom} onChange={this.props.infos}/>
-                    <input type="email" value={this.props.mail}  onChange={this.props.infos}/>
-                </label>
-            </React.Fragment>
-          );
-        }
-      }
-      class Select extends React.Component {
-        render() {
-          return (
-            <React.Fragment>
-              <select name={this.props.Name} onChange={this.props.onchange}>
-                {this.props.select.map((v, i) => (
-                  <option key={i} value={v}>
-                    {" "}
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </React.Fragment>
-          );
-        }
-      }
-      class Radio extends React.Component {
-        render() {
-          return (
-            <React.Fragment>
-              <label>
-                <input
-                  type="radio"
-                  name={this.props.name}
-                  value={this.props.value}
-                  onClick={this.props.handleSelect}
-                />{" "}
-                {this.props.label}
-              </label>
-            </React.Fragment>
-          );
-        }
-      }
+		<!-- babel => compilation du JSX -->
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<!-- CSS only -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+			crossorigin="anonymous"
+		/>
+		<style>
+			.question {
+				border-bottom: 1px solid #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			const questions = {
+				symfony: {
+					title: "Sur quel design pattern Symfony est-il basé ?",
+					choices: ["MMV", "MVC", "MMVV"],
+					response: 1,
+					type: "select",
+					name: "symfony",
+					feedback: "Symfony est basé sur le pattern MVC",
+				},
+				react: {
+					title: "React est-il un framework ?",
+					choices: ["yes", "no"],
+					response: 1,
+					type: "radio",
+					name: "react",
+					feedback: "React est une librairie",
+				},
+				jsx: {
+					title: "JSX c'est quoi ?",
+					choices: [
+						"JSX est un langage compilé",
+						"JSX est un sur-ensemble développé par Facebook",
+						"JSX est un format de données",
+					],
+					response: 1,
+					type: "radio",
+					name: "jsx",
+					feedback: "JSX est un sur ensemble à JS",
+				},
+			};
 
-      class App extends React.Component {
-         
-        
-        render() {
-          return (
-            <div>
-                <Form>
-                    <Input prenom="roger" mail="poulet@tonpere.fr" question="es ce que les jumeaux on la meme taille de penis " infos={(e) => console.log(e.target.value)}/>
-                    <Select Name="tem" select={["les regligons sont des sectes", "lanniserter>stark", "harry potter surcoté"]} onchange={(e) => console.log(e.target.value)}/>
+			class Input extends React.Component {
+				render() {
+					return (
+						<div className='my-3 question'>
+							<label className='form-label' htmlFor={this.props.name}>
+								{this.props.label}
+							</label>
+							<input
+								className='form-control'
+								id={this.props.name}
+								type={this.props.type}
+								value={this.props.value}
+								onChange={this.props.handleChange}
+							/>
+						</div>
+					);
+				}
+			}
 
-                <Radio
-                name="question1"
-                value={0}
-                label="oui"
-                handleSelect={(e) => console.log(e.target.value)}
-              />
-              <Radio
-                name="question1"
-                value={1}
-                label="non"
-                handleSelect={(e) => console.log(e.target.value)}
-              />
-              </Form>
-            </div>
-          );
-        }
-      }
+			class Select extends React.Component {
+				render() {
+					return (
+						<div className='my-3 question'>
+							<label className='form-label' htmlFor={this.props.name}>
+								{this.props.label}
+							</label>
+							<select
+								className='form-select mb-3'
+								id={this.props.name}
+								value={this.props.value}
+								onChange={this.props.handleChange}>
+								{this.props.choices.map((v, i) => (
+									<option value={i} key={i}>
+										{v}
+									</option>
+								))}
+							</select>
+						</div>
+					);
+				}
+			}
 
-      // Rendu dans le DOM
-      ReactDOM.render(<App />, document.getElementById("root"));
-    </script>
-  </body>
+			class RadioChoices extends React.Component {
+				render() {
+					console.log("RADIO CHOICES", this.props);
+					return (
+						<div className='my-3 question'>
+							<p className='form-label'>{this.props.label}</p>
+							<p>
+								Répondez en choisissant une seule et bonne réponse ci-dessous :
+								<br />
+								{this.props.choices.map((v, i) => (
+									<Radio
+										key={i}
+										label={v}
+										name={this.props.name}
+										value={i}
+										checked={this.props.value === i}
+										handleSelect={this.props.handleChange}
+									/>
+								))}
+							</p>
+						</div>
+					);
+				}
+			}
+
+			class Radio extends React.Component {
+				render() {
+					return (
+						<React.Fragment>
+							<label className='form-check'>
+								<input
+									type='radio'
+									className='form-check-input'
+									name={this.props.name}
+									value={this.props.value}
+									onChange={this.props.handleSelect}
+									checked={this.props.checked}
+								/>{" "}
+								{this.props.label}
+							</label>
+						</React.Fragment>
+					);
+				}
+			}
+
+			class Form extends React.Component {
+				handleSubmit = (e) => {};
+
+				render() {
+					return (
+						<form onSubmit={this.handleSubmit}>
+							{Object.values(this.props.questions).map((question, i) => {
+								switch (question.type) {
+									case "select":
+										return (
+											<Select
+												key={i}
+												label={question.title}
+												name={question.name}
+												choices={question.choices}
+												value={this.props.answers[question.name]}
+												handleChange={(e) => {
+													this.props.changeAnswer(e, question.name);
+												}}
+											/>
+										);
+									case "radio":
+										return (
+											<RadioChoices
+												key={i}
+												label={question.title}
+												name={question.name}
+												choices={question.choices}
+												value={this.props.answers[question.name]}
+												handleChange={(e) =>
+													this.props.changeAnswer(e, question.name)
+												}
+											/>
+										);
+									case "text":
+									case "email":
+									case "password":
+										return (
+											<Input
+												key={i}
+												type={question.type}
+												label={question.title}
+												name={question.name}
+												value={this.props.answers[question.name]}
+												handleChange={(e) =>
+													this.props.changeAnswer(e, question.name)
+												}
+											/>
+										);
+									default:
+										return (
+											<p key={i} style={{ color: "red" }}>
+												Attention, question invalide
+											</p>
+										);
+								}
+							})}
+							<button className='btn btn-success mb-3' type='submit'>
+								Cliquez pour valider vos réponses
+							</button>
+						</form>
+					);
+				}
+			}
+
+			class Wrapper extends React.Component {
+				render() {
+					return (
+						<div className='card' style={{ paddingLeft: 20, paddingRight: 20 }}>
+							{this.props.children}
+						</div>
+					);
+				}
+			}
+
+			class App extends React.Component {
+				constructor() {
+					super();
+					this.state = {
+						answers: {},
+					};
+				}
+				componentDidMount() {
+					const initialAnswers = {};
+					for (const key in questions) {
+						initialAnswers[key] = "";
+					}
+					console.log(initialAnswers);
+					this.setState({ answers: initialAnswers });
+				}
+				changeAnswer = (event, questionID) => {
+					this.setState({
+						answers: {
+							...this.state.answers,
+							[questionID]: Number(event.target.value),
+						},
+					});
+				};
+				render() {
+					return (
+						<div className='container'>
+							<h1>QCM</h1>
+							<Wrapper>
+								<Form
+									questions={questions}
+									answers={this.state.answers}
+									changeAnswer={this.changeAnswer}
+								/>
+							</Wrapper>
+						</div>
+					);
+				}
+			}
+
+			// Rendu dans le DOM
+			ReactDOM.render(<App />, document.getElementById("root"));
+		</script>
+	</body>
 </html>
