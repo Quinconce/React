@@ -19,6 +19,30 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
+    class Form extends React.Component {
+        render() {
+          return (
+            <React.Fragment>
+               <form onSubmit={this.props.submit}>
+                
+                </form>
+            </React.Fragment>
+          );
+        }
+      }
+    class Input extends React.Component {
+        render() {
+          return (
+            <React.Fragment>
+                <label >
+                    <p>{this.props.question}</p>
+                    <input type="text" value={this.props.prenom} onChange={this.props.infos}/>
+                    <input type="email" value={this.props.mail}  onChange={this.props.infos}/>
+                </label>
+            </React.Fragment>
+          );
+        }
+      }
       class Select extends React.Component {
         render() {
           return (
@@ -54,13 +78,16 @@
       }
 
       class App extends React.Component {
+         
         
         render() {
           return (
             <div>
-              <Select Name="tem" select={["les regligons sont des sectes", "lanniserter>stark", "harry potter surcoté"]} onchange={(e) => console.log(e.target.value)}/>
+                <Form>
+                    <Input prenom="roger" mail="poulet@tonpere.fr" question="es ce que les jumeaux on la meme taille de penis " infos={(e) => console.log(e.target.value)}/>
+                    <Select Name="tem" select={["les regligons sont des sectes", "lanniserter>stark", "harry potter surcoté"]} onchange={(e) => console.log(e.target.value)}/>
 
-              <Radio
+                <Radio
                 name="question1"
                 value={0}
                 label="oui"
@@ -72,6 +99,7 @@
                 label="non"
                 handleSelect={(e) => console.log(e.target.value)}
               />
+              </Form>
             </div>
           );
         }
